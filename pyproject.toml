@@ -4,4 +4,10 @@ build-backend = "flit_core.buildapi"
 
 [tool.flit.metadata]
 module = "tasks"
+author = "silence"
 
+[tool.pytest.ini_options]
+markers = [
+    "smoke",
+    "get"
+]

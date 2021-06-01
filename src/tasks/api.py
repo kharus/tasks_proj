@@ -2,7 +2,6 @@
 
 from collections import namedtuple
 
-
 # Task element types : [summary: str, owner: str, done: bool, id: int]
 Task = namedtuple('Task', ['summary', 'owner', 'done', 'id'])
 Task.__new__.__defaults__ = (None, None, False, None)
@@ -17,14 +16,14 @@ class UninitializedDatabase(TasksException):
     """Call tasks.start_tasks_db() before other functions."""
 
 
-def add(task):  # type: (Task) -> int
+def add(task: Task) -> int:
     """Add a task (a Task object) to the tasks database."""
     if not isinstance(task, Task):
         raise TypeError('task must be Task object')
-    if not isinstance(task.summary, string_types):
+    if not isinstance(task.summary, str):
         raise ValueError('task.summary must be string')
     if not ((task.owner is None) or
-            isinstance(task.owner, string_types)):
+            isinstance(task.owner, str)):
         raise ValueError('task.owner must be string or None)')
     # We test for this in ch5, so keep this commented out to let
     # the ch5 test fail.
@@ -39,7 +38,7 @@ def add(task):  # type: (Task) -> int
     return task_id
 
 
-def get(task_id):  # type: (int) -> Task
+def get(task_id: int) -> Task:
     """Return a Task object with matching task_id."""
     if not isinstance(task_id, int):
         raise TypeError('task_id must be an int')
@@ -49,23 +48,23 @@ def get(task_id):  # type: (int) -> Task
     return Task(**task_dict)
 
 
-def list_tasks(owner=None):  # type: (str|None) -> list of Task
+def list_tasks(owner: str = None) -> list[Task]:
     """Return a list of Task objects."""
-    if owner and not isinstance(owner, string_types):
+    if owner and not isinstance(owner, str):
         raise TypeError('owner must be a string')
     if _tasksdb is None:
         raise UninitializedDatabase()
     return [Task(**t) for t in _tasksdb.list_tasks(owner)]
 
 
-def count():  # type: (None) -> int
+def count() -> int:
     """Return the number of tasks in db."""
     if _tasksdb is None:
         raise UninitializedDatabase()
     return _tasksdb.count()
 
 
-def update(task_id, task):  # type: (int, Task) -> None
+def update(task_id: int, task: Task) -> None:
     """Modify task in db with given task_id."""
     if not isinstance(task_id, int):
         raise TypeError('task_id must be an int')
@@ -81,7 +80,7 @@ def update(task_id, task):  # type: (int, Task) -> None
     _tasksdb.update(task_id, current_task)
 
 
-def delete(task_id):  # type: (int) -> None
+def delete(task_id: int) -> None:
     """Remove a task from db with given task_id."""
     if not isinstance(task_id, int):
         raise TypeError('task_id must be an int')
@@ -90,14 +89,14 @@ def delete(task_id):  # type: (int) -> None
     _tasksdb.delete(task_id)
 
 
-def delete_all():  # type: () -> None
+def delete_all() -> None:
     """Remove all tasks from db."""
     if _tasksdb is None:
         raise UninitializedDatabase()
     _tasksdb.delete_all()
 
 
-def unique_id():  # type: () -> int
+def unique_id() -> int:
     """Return an integer that does not exist in the db."""
     if _tasksdb is None:
         raise UninitializedDatabase()
@@ -107,9 +106,9 @@ def unique_id():  # type: () -> int
 _tasksdb = None
 
 
-def start_tasks_db(db_path, db_type):  # type: (str, str) -> None
+def start_tasks_db(db_path: str, db_type: str) -> None:
     """Connect API functions to a db."""
-    if not isinstance(db_path, string_types):
+    if not isinstance(db_path, str):
         raise TypeError('db_path must be a string')
     global _tasksdb
     if db_type == 'tiny':
@@ -122,7 +121,7 @@ def start_tasks_db(db_path, db_type):  # type: (str, str) -> None
         raise ValueError("db_type must be a 'tiny' or 'mongo'")
 
 
-def stop_tasks_db():  # type: () -> None
+def stop_tasks_db() -> None:
     """Disconnect API functions from db."""
     global _tasksdb
     _tasksdb.stop_tasks_db()
